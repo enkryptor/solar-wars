@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "server:coverage": "nx test solar-wars-server --coverage --coverageReporters=lcov",
+    "client:coverage": "nx test solar-wars-client-web --coverage --coverageReporters=lcov"
   },
   "private": true,
   "dependencies": {
