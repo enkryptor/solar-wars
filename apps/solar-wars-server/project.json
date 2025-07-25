@@ -1,8 +1,9 @@
 {
   "name": "solar-wars-server",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "solar-wars-server/src",
   "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/solar-wars-server/src",
   "tags": [],
   "targets": {
     "build": {
@@ -39,7 +40,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "solar-wars-server/jest.config.ts",
+        "jestConfig": "apps/solar-wars-server/jest.config.ts",
         "passWithNoTests": true
       }
     }
