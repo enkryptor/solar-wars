@@ -1,6 +1,6 @@
 {
   "name": "solar-wars-server",
-  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "solar-wars-server/src",
   "projectType": "application",
   "tags": [],
