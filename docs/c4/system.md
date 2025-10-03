@@ -1,26 +1,21 @@
+# Системная диаграмма
+
+Контекст — пользователи и внешние системы.
 
 ```mermaid
-C4Context
-    title Solar Wars
+graph TD
+    creator("👤 Создатель")
+    player("👤 Игрок")
+    
+    game("Solar Wars")
+    sso("Yandex SSO")
 
-    Person(creator, "Создатель", "Зарегистрированный пользователь")
-    Person_Ext(player, "Игрок")
-
-    System(frontend, "Frontend")
-    System(backend, "Backend")
-
-    System_Ext(sso, "Yandex SSO")
-
-    Rel(frontend, backend, "REST API", "HTTP")
-    Rel(backend, sso, "Аутентифицирует Создателя")
-    Rel(creator, frontend, "Создаёт игру", "HTTP")
-    Rel(creator, player, "Делится ссылкой")
-    Rel(player, frontend, "Играет", "HTTP")
+    game -.->|Аутентифицирует Создателя| sso
+    creator -.->|Создаёт игру| game
+    creator -.->|Делится ссылкой| player
+    player -.->|Играет| game
 
 
-    UpdateLayoutConfig($c4ShapeInRow="2")
-
-    %% костыли для бета-версии диаграммы
-    UpdateRelStyle(creator, player, $offsetY="-10", $offsetX="-50")
-    UpdateRelStyle(frontend, backend, $offsetY="-10", $offsetX="-35")
+    %% Внешние системы отмечаем серой обводкой
+    style sso stroke:#333,stroke-dasharray: 4 2
 ```

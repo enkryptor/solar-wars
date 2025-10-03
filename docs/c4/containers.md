@@ -1,26 +1,30 @@
+# Диаграмма контейнеров
+
 ```mermaid
-C4Container
-    Person_Ext(user, "Пользователь")
+graph TD
+    user("👤 Пользователь")
 
-    System_Boundary(b0, "Фронтенд") {
-        Container(frontend, "Фронтенд приложение", "angular")
-        Container(static, "Web server", "nginx")
-    }
+    subgraph UI
+        static("Static Content<br>[nginx]")
+        frontend("UI<br>[Angular]")
+    end
 
-    System_Boundary(b1, "Бэкенд") {
-        Container(gateway, "Реверс прокси", "nginx")
-        Container(backend, "Бэкенд", "nestjs")
-        ContainerDb(db, "СУБД", "SQLite")
-    }
+    subgraph server
+        backend("Backend<br>[Nest.js]")
+        database("СУБД<br>[SQLite]")
+    end
 
-    Rel(user, frontend, "Взаимодействует", "браузер")
-    Rel(static, frontend, "Предоставляет", "HTTPS")
-    Rel(frontend, gateway, "REST API", "HTTPS")
-    Rel(gateway, backend, "Перенаправляет запросы", "HTTP")
-    Rel(backend, db, "Хранит состояние", "node:sqlite")
+    %% внешние системы:
+    sso("Yandex SSO")
 
-    UpdateLayoutConfig($c4ShapeInRow="1")
+    %% связи:
+    user -.->|"Загружает UI"| static
+    user -.->|"Взаимодействует с игрой"| frontend
+    static -.->|"Раздаёт"| frontend
+    frontend -.->|"Работает с API<br>[JSON, HTTP]"| backend
+    backend -.->|"Хранит состояние<br>[node:sqlite]"| database
 
-    %% костыли для бета-версии диаграммы
-    UpdateRelStyle(user, frontend, $offsetY="-30")
+    backend -.->|Аутентифицирует Создателя| sso
+
+    style sso stroke:#333,stroke-dasharray: 4 2
 ```
