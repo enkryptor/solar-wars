@@ -1,0 +1,53 @@
+# Use official Node.js runtime as base image
+FROM node:18-alpine AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY nx.json ./
+COPY tsconfig*.json ./
+
+# Copy the specific project files
+COPY apps/solar-wars-server/ ./apps/solar-wars-server/
+
+# Install dependencies
+RUN npm ci
+
+# Build the specific application
+RUN npx nx build solar-wars-server --skip-nx-cache
+
+# Production stage
+FROM node:18-alpine AS production
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
+
+# Create app user for security
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nestjs -u 1001
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files for production dependencies
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm ci --only=production && npm cache clean --force
+
+# Copy built application from builder stage
+COPY --from=builder --chown=nestjs:nodejs /app/dist/apps/solar-wars-server ./dist
+
+# Switch to non-root user
+USER nestjs
+
+# Expose the port your app runs on (adjust if different)
+EXPOSE 3000
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start the application
+CMD ["node", "dist/main.js"]
